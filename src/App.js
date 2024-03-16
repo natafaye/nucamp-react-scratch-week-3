@@ -1,35 +1,57 @@
 import { useState } from "react"
-import PostForm from "./PostForm"
-
-let nextId = 1 // little hack to get unique ids
+import { useEffect } from "react"
+import Sidebar from "./Sidebar"
+import MessageForm from "./MessageForm"
+import MessageList from "./MessageList"
+import { TEST_MESSAGES } from "./TEST_MESSAGES"
 
 export default function App() {
-    const [postList, setPostList] = useState([ { id: 0, subject: "Week 3", message: "It's week 3!"}])
+    const [messageList, setMessageList] = useState(TEST_MESSAGES)
 
-    const addToPostList = (newPostData) => {
-        // CAN'T UPDATE STATE DIRECTLY
-        //postList.push(newPostData)
+    useEffect(() => {
+        // triggered by the component loading in
+        // sync with an external system (backend, special library)
+        document.title = `(${messageList.length}) Messaging`
 
-        const newPost = {...newPostData, id: nextId++ } // little hack to give it an id
+        console.log("updated document title")
+    }, [messageList]) // first load in (technically twice) and then every time unreadCount changes
 
-        // Fantastic
-        const copyOfPostList = [...postList]
-        copyOfPostList.push(newPost)
-        setPostList(copyOfPostList)
+    useEffect(() => {
+        console.log("Component just loaded in")
+    }, []) // first load in (technically twice) - in production it will be once
 
-        // Fancy
-        //setPostList([...postList, newPost])
+    const addMessage = (newMessageData) => {
+        const newMessage = {
+            id: 3, // purely so I can give it an id
+            ...newMessageData
+        }
+        // BAD WRONG BLASPHEMY
+        //messageList.push(newMessage)
+
+        // PERFECTLY FINE
+        // const copyOfMessageList = [...messageList]
+        // copyOfMessageList.push(newMessage)
+        // setMessageList(copyOfMessageList)
+
+        // BEAUTIFUL MAGIC HAPPINESS
+        setMessageList( [...messageList, newMessage] )
     }
 
     return (
-        <div className="container mt-3">
-            <PostForm addPost={addToPostList}/>
-            { postList.map(post => (
-                <div key={post.id} className="border my-3 p-3">
-                    <h2>{post.subject}</h2>
-                    <p>{post.message}</p>
-                </div>
-            ))}
+        <div className="main-container">
+            <Sidebar />
+            <div className="main">
+                <MessageList messageList={messageList}/>
+                <MessageForm addMessage={addMessage}/>
+            </div>
         </div>
     )
 }
+
+
+// CSS with React Philosophies
+// 1) CSS modules -> my favorite
+// 2) CSS in JS (styled-components) -> not as popular (kinda annoying)
+// 3) basic css -> very broad styling (bootstrap) (tailwind)
+// 4) inline styling -> dynamic styling, little things
+// 5) UI library (Reactstrap, MUI, Tailwind UI)
