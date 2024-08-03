@@ -11,4 +11,16 @@ export const TEST_MESSAGES = [
         author: "Chad",
         private: true
     },
+    {
+        id: 2,
+        text: "But I'm fine",
+        author: "Chad",
+        private: false
+    },
+    {
+        id: 3,
+        text: "Oh no I'm so sorry",
+        author: "Natalie",
+        private: true
+    },
 ]
